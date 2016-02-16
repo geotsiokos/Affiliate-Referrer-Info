@@ -34,7 +34,6 @@ function affiliate_referrer_info ( $attr = array(), $content = null ) {
 
 	if ( $user_id && affiliates_user_is_affiliate( $user_id ) ) {
 		if ( $affiliate_ids = affiliates_get_user_affiliate( $user_id ) ) {
-			write_log( $affiliate_ids );
 			foreach ( $affiliate_ids as $affiliate_id ) {
 				if ( $affiliate_referrer = $wpdb->get_var( $wpdb->prepare (	"SELECT from_affiliate_id FROM $relations_table WHERE to_affiliate_id=%d ", $affiliate_id ) ) ) {
 					continue;
