@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Affiliate Referrer Info
  * Plugin URI: http://www.netpad.gr
- * Description: Use the shortcode [affiliate-referrer-info] to show your affiliates who has referred them. An extension for Affiliates Enterprise.
+ * Description: Use the shortcode [affiliate_referrer_info] to show your affiliates who has referred them. An extension for Affiliates Pro and Enterprise.
  * Version: 1.0
  * Author: George Tsiokos
  * Author URI: http://www.netpad.gr
@@ -12,15 +12,6 @@ if ( !defined( 'ABSPATH' ) ) {
 }
 
 add_action ( 'init', 'add_affiliate_ref_info_shortcodes' );
-add_action( 'admin_notices', array( __CLASS__, 'admin_notices' ) );
-
-function admin_notices() {
-	if ( !empty( self::$admin_messages ) ) {
-		foreach ( self::$admin_messages as $msg ) {
-			echo $msg;
-		}
-	}
-}
 
 function add_affiliate_ref_info_shortcodes ( $data ) {
 	add_shortcode ( 'affiliate_referrer_info', 'affiliate_referrer_info' );
@@ -92,7 +83,7 @@ function affiliate_referrer_info ( $attr = array(), $content = null ) {
 			}
 		}
 	} else {
-		self::$admin_messages[] = "<div class='error'>The <strong>Affiliates Referrer Info</strong> plugin requires on of the Affiliates plugins by <a href='http://itthinx.com'>Itthinx</a> to be installed and activated.</div>";
+		echo "<div class='error'>The <strong>Affiliates Referrer Info</strong> plugin requires on of the Affiliates plugins by <a href='http://itthinx.com'>Itthinx</a> to be installed and activated.</div>";
 	}
 	if ( $user_id = affiliates_get_affiliate_user( $affiliate_referrer ) ) {
 		if ( $user = get_user_by( 'id', $user_id ) ) {
