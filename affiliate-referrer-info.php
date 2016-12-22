@@ -3,7 +3,7 @@
  * Plugin Name: Affiliate Referrer Info
  * Plugin URI: http://www.netpad.gr
  * Description: Use the shortcode [affiliate_referrer_info] to show your affiliates who has referred them. An extension for Affiliates Pro and Enterprise.
- * Version: 1.0.1
+ * Version: 1.0
  * Author: George Tsiokos
  * Author URI: http://www.netpad.gr
  */
@@ -28,10 +28,10 @@ function affiliate_pro_referrer ( $new_affiliate_id ) {
 		include_once ( ABSPATH . 'wp-content/plugins/affiliates-pro/lib/core/class-affiliates-service.php' );
 		if (Affiliates_Service::get_referrer_id( $service = null ) ) {
 			$referrer_id = Affiliates_Service::get_referrer_id( $service = null );
-			$options = get_option( 'affiliate_referrers', array() );
+			$options_referrers = get_option( 'affiliate_referrers', array() );
 		}
-		$options[] = array( $referrer_id => (int)$new_affiliate_id );
-		update_option( 'affiliate_referrers', $options, false );		
+		$options_referrers[] = array( $referrer_id => (int)$new_affiliate_id );
+		update_option( 'affiliate_referrers', $options_referrers, false );		
 	}
 }
 
@@ -58,7 +58,7 @@ function affiliate_referrer_info ( $attr = array(), $content = null ) {
 		$relations_table = _affiliates_get_tablename( 'affiliates_relations' );		
 	
 		if ( $user_id && affiliates_user_is_affiliate( $user_id ) ) {
-			if ( $affiliate_ids = affiliates_get_user_affiliate( $user_id ) ) {
+			if ( $affiliate_ids = affiliates_get_user_affiliate( $user_id, 'active' ) ) {
 				foreach ( $affiliate_ids as $affiliate_id ) {
 					if ( $affiliate_referrer = $wpdb->get_var( $wpdb->prepare (	"SELECT from_affiliate_id FROM $relations_table WHERE to_affiliate_id=%d ", $affiliate_id ) ) ) {
 						continue;
@@ -70,14 +70,10 @@ function affiliate_referrer_info ( $attr = array(), $content = null ) {
 		if ( get_option( 'affiliate_referrers' ) ) {
 			$affiliate_referrers = get_option( 'affiliate_referrers' );
 			$relations = count( $affiliate_referrers );
-			write_log( 'count referrers' );
-			write_log( $relations );
 			
 			if ( $user_id && affiliates_user_is_affiliate( $user_id ) ) {
 				if ( !is_null( affiliates_get_user_affiliate( $user_id, 'active' ) ) ) {
 					$affiliate_ids = affiliates_get_user_affiliate( $user_id, 'active' );
-					write_log( 'affiliate_referrers' );
-					write_log( $affiliate_referrers );
 					$affiliate_id = $affiliate_ids[0];					
 					foreach( $affiliate_referrers as $aff_referrer ) {
 						foreach( $aff_referrer as $key => $value ) {
@@ -92,7 +88,7 @@ function affiliate_referrer_info ( $attr = array(), $content = null ) {
 	} else {
 		echo "<div class='error'>The <strong>Affiliates Referrer Info</strong> plugin requires on of the Affiliates plugins by <a href='http://itthinx.com'>Itthinx</a> to be installed and activated.</div>";
 	}
-	if ( $user_id = affiliates_get_affiliate_user( $affiliate_referrer ) ) {
+	if ( $user_id = affiliates_get_affiliate_user( (int)$affiliate_referrer ) ) {
 		if ( $user = get_user_by( 'id', $user_id ) ) {
 			switch( $display ) {
 				case 'user_login' :
@@ -116,7 +112,7 @@ function affiliate_referrer_info ( $attr = array(), $content = null ) {
 			$output = wp_strip_all_tags( $output );
 		}
 	}
-
+	
 	return $output;
 }
 
