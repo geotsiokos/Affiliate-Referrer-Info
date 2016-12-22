@@ -41,7 +41,7 @@ function affiliate_referrer_info ( $attr = array(), $content = null ) {
 	$affiliate_referrer = 1;
 	$active_plugins = get_option( 'active_plugins', array() );
 	$affiliates_pro_is_active = in_array( 'affiliates-pro/affiliates-pro.php', $active_plugins );
-	$affiliates_entr_is_active = in_array( 'affiliates-pro/affiliates-enterprise.php', $active_plugins );
+	$affiliates_entr_is_active = in_array( 'affiliates-enterprise/affiliates-enterprise.php', $active_plugins );
 
 	$options = shortcode_atts(
 			array(
@@ -67,16 +67,23 @@ function affiliate_referrer_info ( $attr = array(), $content = null ) {
 			}
 		}
 	} else if ( $affiliates_pro_is_active ) {
-		$affiliate_referrers = get_option( 'affiliate_referrers' );
-		$relations = count( $affiliate_referrers );
-		
-		if ( $user_id && affiliates_user_is_affiliate( $user_id ) ) {
-			if ( $affiliate_ids = affiliates_get_user_affiliate( $user_id ) ) {
-				$affiliate_id = $affiliate_ids[0];
-				for( $i=0; $i <= $relations; $i++ ) {
-					foreach( $affiliate_referrers[$i] as $key => $value ) {
-						if ( $affiliate_id == $value ) {
-							$affiliate_referrer = $key;
+		if ( get_option( 'affiliate_referrers' ) ) {
+			$affiliate_referrers = get_option( 'affiliate_referrers' );
+			$relations = count( $affiliate_referrers );
+			write_log( 'count referrers' );
+			write_log( $relations );
+			
+			if ( $user_id && affiliates_user_is_affiliate( $user_id ) ) {
+				if ( !is_null( affiliates_get_user_affiliate( $user_id, 'active' ) ) ) {
+					$affiliate_ids = affiliates_get_user_affiliate( $user_id, 'active' );
+					write_log( 'affiliate_referrers' );
+					write_log( $affiliate_referrers );
+					$affiliate_id = $affiliate_ids[0];					
+					foreach( $affiliate_referrers as $aff_referrer ) {
+						foreach( $aff_referrer as $key => $value ) {
+							if ( $affiliate_id == $value ) {
+								$affiliate_referrer = $key;
+							}
 						}
 					}
 				}
