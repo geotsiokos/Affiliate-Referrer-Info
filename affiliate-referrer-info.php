@@ -3,7 +3,7 @@
  * Plugin Name: Affiliate Referrer Info
  * Plugin URI: http://www.netpad.gr
  * Description: Use the shortcode [affiliate_referrer_info] to show your affiliates who has referred them. An extension for Affiliates Pro and Enterprise.
- * Version: 1.0
+ * Version: 1.0.1
  * Author: George Tsiokos
  * Author URI: http://www.netpad.gr
  */
